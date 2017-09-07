@@ -6,6 +6,10 @@ const config = require('../config')
 const app = express()
 const imageClient = new GoogleImages(config.cseId, config.apiKey)
 
+app.get('/', (req, res) => {
+    res.send('Server up!')
+})
+
 app.get('/api/imagesearch/:term', (req, res) => {
     const term = req.params.term
     const options = {}
