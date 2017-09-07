@@ -5,8 +5,10 @@
   "author": "Daniele Del Giudice",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "express": "^4.15.4",
-    "google-images": "^2.1.0"
+    "google-images": "^2.1.0",
+    "mongoose": "^4.11.10"
   },
   "scripts": {
     "start": "node index.js"

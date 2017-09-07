@@ -1,14 +1,19 @@
 const express = require('express')
+const mongoose = require('mongoose')
+mongoose.Promise = require('bluebird');
 const GoogleImages = require('google-images')
 
 const config = require('../config')
+const Search = require('./models/search')
 
-const app = express()
+mongoose.connect(config.mongoDBUri, {
+    useMongoClient: true
+})
+
 const imageClient = new GoogleImages(config.cseId, config.apiKey)
 
-app.get('/', (req, res) => {
-    res.send('Server up!')
-})
+const app = express()
+app.use(express.static('public'));
 
 app.get('/api/imagesearch/:term', (req, res) => {
     const term = req.params.term
@@ -29,6 +34,23 @@ app.get('/api/imagesearch/:term', (req, res) => {
             })
             res.json(mapped)
         })
+
+    Search.create({
+        term: term,
+        when: new Date()
+    })
+})
+
+
+
+app.get('/api/latest/imagesearch', (req, res) => {
+    Search.find({}, 'term when -_id')
+        .sort('-when')
+        .limit(10)
+        .exec((err, searches) => {
+            if (err) return;
+            res.json(searches)
+    })
 })
 
 module.exports = app
